@@ -107,6 +107,12 @@ class Process implements Runnable {
     @Override
     public void run() {
         // TODO #3: Acquire CPU semaphore before executing
+        try {
+            SharedResources.cpuSemaphore.acquire();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return;
+        }
         // This ensures only allowed number of processes run simultaneously
 
         try {
@@ -171,6 +177,7 @@ class Process implements Runnable {
         } finally {
             // TODO #4: Release CPU semaphore here
             // Always release in finally block to prevent deadlocks!
+            SharedResources.cpuSemaphore.release();
         }
     }
 
